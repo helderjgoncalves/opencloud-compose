@@ -7,6 +7,10 @@
 !/config/opencloud/apps/.gitkeep
 !/config/opencloud/apps/maps
 
+# exclude runtime OpenCloud state
+/app/config/*
+/app/data/*
+
 # exclude custom compose files
 /custom
 
@@ -17,3 +21,9 @@
 # exclude the certificates config folder
 /config/traefik/dynamic/*
 !/config/traefik/dynamic/.gitkeep
+
+# Excalidraw 1.1.0 is installed under app/apps on the host, but its upstream
+# bundle embeds Excalidraw public Firebase web config. GitHub secret scanning
+# flags that apiKey, so the zip and extracted tree are never committed.
+/app/apps/excalidraw/
+/app/apps/excalidraw-*.zip

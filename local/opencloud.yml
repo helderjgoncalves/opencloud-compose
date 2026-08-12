@@ -1,0 +1,14 @@
+---
+services:
+  opencloud:
+    # Resolve *.hgoncalves.uk via AdGuard Home, which holds the LAN-internal
+    # A records. Docker's embedded resolver would only see the public ones.
+    dns:
+      - 192.168.1.2
+    # A stalled embedded NATS bus sends every internal service into a retry
+    # loop that queues events in memory; unbounded, this exhausts host RAM and
+    # pushes the NAS into swap thrash on the array. Steady state is ~850MB.
+    # memswap_limit must equal mem_limit: without it the container spills past
+    # the cap into swap instead of being killed, which is the same thrash.
+    mem_limit: 3g
+    memswap_limit: 3g

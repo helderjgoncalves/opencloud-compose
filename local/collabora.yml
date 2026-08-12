@@ -1,0 +1,10 @@
+---
+services:
+  collabora:
+    # Same AdGuard Home resolver as the opencloud service, see
+    # local/opencloud.yml.
+    dns:
+      - 192.168.1.2
+    # Appended to the image's coolwsd entrypoint. The admin console is served
+    # on the public collabora hostname, see AGENTS.md section 7.
+    command: ["--o:admin_console.enable=false"]
