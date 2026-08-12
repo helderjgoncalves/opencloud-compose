@@ -1,0 +1,7 @@
+---
+services:
+  opencloud:
+    # Resolve *.hgoncalves.uk via Pi-hole, which holds the LAN-internal A
+    # records. Docker's embedded resolver would only see the public ones.
+    dns:
+      - 192.168.1.2

@@ -7,6 +7,10 @@
 !/config/opencloud/apps/.gitkeep
 !/config/opencloud/apps/maps
 
+# exclude runtime OpenCloud state
+/app/config/*
+/app/data/*
+
 # exclude custom compose files
 /custom
 
