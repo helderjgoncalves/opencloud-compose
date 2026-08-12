@@ -1,0 +1,8 @@
+{
+  "config": {},
+  "name": "bpmn",
+  "version": "1.1.1",
+  "description": "OpenCloud web BPMN editor integration",
+  "license": "AGPL-3.0",
+  "entrypoint": "js/remoteEntry-CvOaxwxz.mjs"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "web-app-calculator",
+  "version": "2.1.0",
+  "description": "OpenCloud Web calculator search provider",
+  "license": "AGPL-3.0",
+  "entrypoint": "js/remoteEntry-BY5AMg_n.mjs"
+}

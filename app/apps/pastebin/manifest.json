@@ -1,0 +1,7 @@
+{
+  "name": "pastebin",
+  "version": "2.2.0",
+  "description": "OpenCloud Web Pastebin",
+  "license": "AGPL-3.0",
+  "entrypoint": "js/remoteEntry-Ceql-J_W.mjs"
+}

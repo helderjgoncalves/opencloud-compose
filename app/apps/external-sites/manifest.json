@@ -1,0 +1,7 @@
+{
+  "name": "external-sites",
+  "version": "2.2.0",
+  "description": "add external sites to the OpenCloud Web app menu",
+  "license": "AGPL-3.0",
+  "entrypoint": "js/remoteEntry-9M2TgpT2.mjs"
+}
