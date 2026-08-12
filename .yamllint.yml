@@ -1,0 +1,29 @@
+---
+# Lint rules for the compose overlays in this repo.
+#
+# This is a fork that gets rebased onto upstream regularly (see AGENTS.md), so
+# the config bends to upstream's formatting rather than the other way round:
+# reformatting their files would mean a merge conflict on every rebase, for no
+# runtime benefit. The rules below are the ones upstream currently trips.
+#
+#   brackets, indentation, empty-lines, new-line-at-end-of-file — cosmetic.
+#   line-length      — pinned image digests cannot be wrapped.
+#   document-start   — compose files conventionally omit the leading `---`.
+#   truthy           — a workflow's `on:` key is not a boolean.
+#
+# What stays on is what actually bites in a multi-file compose merge: syntax
+# errors, duplicate keys, tabs, and trailing whitespace.
+
+extends: default
+
+rules:
+  brackets: disable
+  indentation: disable
+  empty-lines: disable
+  new-line-at-end-of-file: disable
+  line-length: disable
+  document-start: disable
+  truthy:
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1

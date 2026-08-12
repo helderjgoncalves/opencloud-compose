@@ -1,0 +1,83 @@
+---
+name: validate
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compose:
+    name: compose config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # .env is force-added in this fork (see AGENTS.md), so CI validates the
+      # combination that is actually deployed. The fallback keeps this job
+      # working if .env is ever untracked.
+      - name: Provide .env
+        run: '[ -f .env ] || cp .env.example .env'
+
+      - name: Validate the deployed combination
+        run: docker compose config -q
+
+      # Upstream documents its supported deployments as commented COMPOSE_FILE
+      # lines in .env.example. We do not run those layouts, but validating them
+      # catches an upstream regression, or a botched rebase, before it reaches
+      # the combination we do run.
+      - name: Validate every documented combination
+        run: |
+          status=0
+          combinations=$(sed -n 's/^#[[:space:]]*COMPOSE_FILE=//p' .env.example | sort -u)
+          for combination in $combinations; do
+            echo "::group::$combination"
+            COMPOSE_FILE="$combination" docker compose config -q || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+
+  yamllint:
+    name: yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: pipx install yamllint
+      - run: yamllint --strict .
+
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # SC2148: config/traefik/docker-entrypoint-override.sh is a fragment run
+      # by the image's own shell and has no shebang by design. Excluding the
+      # check is preferable to editing an upstream file for a linter's benefit.
+      - run: git ls-files '*.sh' | xargs shellcheck --severity=warning --exclude=SC2148
+
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Full history: a secret that was committed and later removed is
+          # still a leaked secret. This repo force-adds .env, so the scan
+          # matters more here than in a repo that only ships templates.
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        env:
+          VERSION: 8.30.1
+        run: |
+          curl -sSfL \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C "$RUNNER_TEMP" gitleaks
+
+      - name: Scan git history for secrets
+        run: |
+          "$RUNNER_TEMP/gitleaks" git . --redact --no-banner
